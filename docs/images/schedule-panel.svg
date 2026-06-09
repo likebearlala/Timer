@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="620" viewBox="0 0 900 620" role="img" aria-labelledby="title desc">
+  <title id="title">組別順序後台</title>
+  <desc id="desc">組別順序分頁可新增組別、建立 8 組、移動順序、刪除與設為目前。</desc>
+  <rect width="900" height="620" fill="#f4f7f8"/>
+  <rect x="36" y="28" width="828" height="564" rx="8" fill="#fff" stroke="#d8e0e6" stroke-width="2"/>
+  <rect x="64" y="56" width="220" height="58" rx="8" fill="#fff" stroke="#d8e0e6" stroke-width="2"/>
+  <rect x="340" y="56" width="220" height="58" rx="8" fill="#0f7b6c"/>
+  <rect x="616" y="56" width="220" height="58" rx="8" fill="#fff" stroke="#d8e0e6" stroke-width="2"/>
+  <text x="174" y="94" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="28" fill="#5f6f7d" font-weight="900">設定</text>
+  <text x="450" y="94" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="28" fill="#fff" font-weight="900">組別順序</text>
+  <text x="726" y="94" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="28" fill="#5f6f7d" font-weight="900">歷史紀錄</text>
+  <line x1="36" y1="136" x2="864" y2="136" stroke="#d8e0e6" stroke-width="2"/>
+  <text x="80" y="190" font-family="Microsoft JhengHei, sans-serif" font-size="28" fill="#17202a" font-weight="900">組別順序</text>
+  <text x="80" y="236" font-family="Microsoft JhengHei, sans-serif" font-size="20" fill="#5f6f7d">按「設為目前」可直接跳到該組；按「下一組」會照這份順序前進。</text>
+  <text x="80" y="286" font-family="Microsoft JhengHei, sans-serif" font-size="20" fill="#5f6f7d" font-weight="900">組別名稱</text>
+  <rect x="80" y="306" width="330" height="58" rx="8" fill="#fff" stroke="#d8e0e6" stroke-width="2"/>
+  <text x="104" y="343" font-family="Microsoft JhengHei, sans-serif" font-size="22" fill="#8b97a3">例如：第 1 組、A 組</text>
+  <rect x="432" y="306" width="388" height="58" rx="8" fill="#0f7b6c"/>
+  <text x="626" y="343" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="24" fill="#fff" font-weight="900">新增組別</text>
+  <rect x="80" y="388" width="330" height="48" rx="8" fill="#e8eef1"/>
+  <rect x="432" y="388" width="388" height="48" rx="8" fill="#f4e4e6" stroke="#e8c4c8"/>
+  <text x="245" y="420" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="22" fill="#17202a" font-weight="900">建立 8 組</text>
+  <text x="626" y="420" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="22" fill="#b72534" font-weight="900">清空順序</text>
+  <rect x="80" y="464" width="740" height="54" rx="8" fill="#fff" stroke="#0f7b6c" stroke-width="3"/>
+  <circle cx="108" cy="491" r="15" fill="#e8eef1"/>
+  <text x="108" y="497" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5f6f7d" font-weight="900">1</text>
+  <text x="138" y="498" font-family="Microsoft JhengHei, sans-serif" font-size="20" fill="#17202a" font-weight="900">第 1 組</text>
+  <rect x="510" y="475" width="42" height="32" rx="8" fill="#f4f7f8" stroke="#d8e0e6"/>
+  <rect x="560" y="475" width="42" height="32" rx="8" fill="#f4f7f8" stroke="#d8e0e6"/>
+  <rect x="610" y="475" width="42" height="32" rx="8" fill="#f4e4e6" stroke="#e8c4c8"/>
+  <rect x="666" y="475" width="132" height="32" rx="8" fill="#e8eef1"/>
+  <text x="531" y="497" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#17202a" font-weight="900">↑</text>
+  <text x="581" y="497" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#17202a" font-weight="900">↓</text>
+  <text x="631" y="497" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#b72534" font-weight="900">×</text>
+  <text x="732" y="497" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="16" fill="#17202a" font-weight="900">設為目前</text>
+  <path d="M452 364 C452 432, 522 454, 666 476" fill="none" stroke="#b86416" stroke-width="5" stroke-linecap="round"/>
+  <text x="456" y="552" font-family="Microsoft JhengHei, sans-serif" font-size="20" fill="#b86416" font-weight="900">新增或調整後，主畫面的「下一組」會照此順序前進</text>
+</svg>

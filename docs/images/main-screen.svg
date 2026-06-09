@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">計時器主畫面與設定區</title>
+  <desc id="desc">左側是大倒數與控制按鈕，右側是設定、組別順序、歷史紀錄三個分頁。</desc>
+  <rect width="1200" height="680" fill="#f4f7f8"/>
+  <rect x="24" y="24" width="820" height="632" rx="8" fill="#fff" stroke="#d8e0e6" stroke-width="2"/>
+  <rect x="864" y="24" width="312" height="632" rx="8" fill="#fff" stroke="#d8e0e6" stroke-width="2"/>
+  <line x1="24" y1="112" x2="844" y2="112" stroke="#d8e0e6" stroke-width="2"/>
+  <text x="48" y="58" font-family="Microsoft JhengHei, sans-serif" font-size="18" fill="#5f6f7d" font-weight="700">目前組別</text>
+  <text x="48" y="96" font-family="Microsoft JhengHei, sans-serif" font-size="42" fill="#17202a" font-weight="900">第 1 組</text>
+  <rect x="724" y="48" width="96" height="48" rx="8" fill="#0f7b6c"/>
+  <text x="772" y="80" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="22" fill="#fff" font-weight="900">報告</text>
+  <text x="434" y="330" text-anchor="middle" font-family="Arial, sans-serif" font-size="144" fill="#17202a" font-weight="900">06:00</text>
+  <text x="434" y="384" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="28" fill="#5f6f7d" font-weight="900">準備開始報告</text>
+  <rect x="96" y="420" width="210" height="58" rx="8" fill="#fff" stroke="#d8e0e6"/>
+  <rect x="318" y="420" width="210" height="58" rx="8" fill="#fff" stroke="#d8e0e6"/>
+  <rect x="540" y="420" width="210" height="58" rx="8" fill="#fff" stroke="#d8e0e6"/>
+  <text x="201" y="445" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="15" fill="#5f6f7d" font-weight="700">原定時間</text>
+  <text x="423" y="445" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="15" fill="#5f6f7d" font-weight="700">實際已用</text>
+  <text x="645" y="445" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="15" fill="#5f6f7d" font-weight="700">超時</text>
+  <text x="201" y="468" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#17202a" font-weight="800">06:00</text>
+  <text x="423" y="468" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#17202a" font-weight="800">00:00</text>
+  <text x="645" y="468" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#17202a" font-weight="800">00:00</text>
+  <rect x="96" y="506" width="654" height="14" rx="7" fill="#0f7b6c" opacity="0.75"/>
+  <line x1="24" y1="572" x2="844" y2="572" stroke="#d8e0e6" stroke-width="2"/>
+  <rect x="48" y="596" width="220" height="40" rx="8" fill="#0f7b6c"/>
+  <rect x="280" y="596" width="172" height="40" rx="8" fill="#e8eef1"/>
+  <rect x="464" y="596" width="172" height="40" rx="8" fill="#e8eef1"/>
+  <rect x="648" y="596" width="172" height="40" rx="8" fill="#f4e4e6" stroke="#e8c4c8"/>
+  <text x="158" y="622" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="18" fill="#fff" font-weight="900">開始</text>
+  <text x="366" y="622" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="18" fill="#17202a" font-weight="900">重設本段</text>
+  <text x="550" y="622" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="18" fill="#17202a" font-weight="900">切到 QA</text>
+  <text x="734" y="622" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="18" fill="#b72534" font-weight="900">下一組</text>
+  <rect x="884" y="44" width="82" height="40" rx="8" fill="#0f7b6c"/>
+  <rect x="974" y="44" width="82" height="40" rx="8" fill="#fff" stroke="#d8e0e6"/>
+  <rect x="1064" y="44" width="82" height="40" rx="8" fill="#fff" stroke="#d8e0e6"/>
+  <text x="925" y="70" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="16" fill="#fff" font-weight="900">設定</text>
+  <text x="1015" y="70" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="16" fill="#5f6f7d" font-weight="900">組別順序</text>
+  <text x="1105" y="70" text-anchor="middle" font-family="Microsoft JhengHei, sans-serif" font-size="16" fill="#5f6f7d" font-weight="900">歷史紀錄</text>
+  <text x="884" y="126" font-family="Microsoft JhengHei, sans-serif" font-size="20" fill="#17202a" font-weight="900">時間設定</text>
+  <rect x="884" y="158" width="128" height="46" rx="8" fill="#fff" stroke="#d8e0e6"/>
+  <rect x="1024" y="158" width="128" height="46" rx="8" fill="#fff" stroke="#d8e0e6"/>
+  <text x="902" y="187" font-family="Arial, sans-serif" font-size="24" fill="#17202a">6</text>
+  <text x="1042" y="187" font-family="Arial, sans-serif" font-size="24" fill="#17202a">0</text>
+  <text x="884" y="244" font-family="Microsoft JhengHei, sans-serif" font-size="20" fill="#17202a" font-weight="900">提醒與鈴聲</text>
+  <rect x="884" y="282" width="268" height="56" rx="8" fill="#eef3f4"/>
+  <text x="902" y="316" font-family="Microsoft JhengHei, sans-serif" font-size="15" fill="#0f7b6c" font-weight="900">啟用/測試鈴聲</text>
+  <path d="M750 520 C835 502, 862 436, 884 338" fill="none" stroke="#b86416" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="884" cy="338" r="7" fill="#b86416"/>
+  <text x="662" y="552" font-family="Microsoft JhengHei, sans-serif" font-size="18" fill="#b86416" font-weight="900">右側分頁管理設定與後台資料</text>
+</svg>
