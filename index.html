@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>課程報告計時器</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17202a;
+      --muted: #5f6f7d;
+      --line: #d8e0e6;
+      --panel: #ffffff;
+      --paper: #f4f7f8;
+      --accent: #0f7b6c;
+      --accent-dark: #095f54;
+      --warn: #b86416;
+      --done: #b72534;
+      --shadow: 0 18px 48px rgba(23, 32, 42, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(120deg, rgba(15, 123, 108, 0.12), transparent 36%),
+        linear-gradient(240deg, rgba(184, 100, 22, 0.12), transparent 32%),
+        var(--paper);
+      color: var(--ink);
+      font-family: "Microsoft JhengHei", "Noto Sans TC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 20px;
+      min-height: 100vh;
+      padding: 22px;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: var(--shadow);
+    }
+
+    .topbar,
+    .actions,
+    .settings {
+      padding: 20px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .group {
+      min-width: 0;
+    }
+
+    .group-label,
+    .tiny-label {
+      margin: 0 0 4px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      margin: 0;
+      overflow-wrap: anywhere;
+      font-size: clamp(1.8rem, 3vw, 3rem);
+      line-height: 1.05;
+    }
+
+    .phase-pill {
+      flex: 0 0 auto;
+      min-width: 128px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #fff;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+
+    .timer-wrap {
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .timer {
+      width: min(100%, 900px);
+      text-align: center;
+    }
+
+    .time {
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(6.2rem, 20vw, 16rem);
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: 0;
+    }
+
+    .time.warning {
+      color: var(--warn);
+    }
+
+    .time.finished {
+      color: var(--done);
+    }
+
+    .status {
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: clamp(1.15rem, 2.5vw, 2rem);
+      font-weight: 800;
+    }
+
+    .progress-shell {
+      height: 18px;
+      margin-top: 24px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #e8eef1;
+    }
+
+    .progress {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), #6aa6a0);
+      transition: width 0.2s linear, background 0.2s;
+    }
+
+    .progress.warning {
+      background: linear-gradient(90deg, var(--warn), #d3a055);
+    }
+
+    .progress.finished {
+      background: linear-gradient(90deg, var(--done), #d56b76);
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      gap: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .side {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .settings {
+      display: grid;
+      gap: 20px;
+      overflow: auto;
+    }
+
+    .section {
+      display: grid;
+      gap: 12px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    input {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: #fff;
+      color: var(--ink);
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 48px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    .toggle-row input {
+      width: 22px;
+      min-height: 22px;
+      accent-color: var(--accent);
+    }
+
+    .hint {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .button {
+      min-height: 54px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 10px 14px;
+      background: #e8eef1;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 900;
+      transition: transform 0.08s, background 0.18s, border-color 0.18s;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button:active {
+      transform: translateY(0);
+    }
+
+    .button.primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .button.primary:hover {
+      background: var(--accent-dark);
+    }
+
+    .button.danger {
+      background: #f4e4e6;
+      color: var(--done);
+      border-color: #e8c4c8;
+    }
+
+    .button.small {
+      min-height: 44px;
+      padding: 8px 12px;
+      font-size: 0.95rem;
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .sound-state {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #f4f7f8;
+    }
+
+    .sound-state strong {
+      color: var(--accent-dark);
+    }
+
+    @media (max-width: 920px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .side {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .app {
+        padding: 12px;
+      }
+
+      .topbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .phase-pill {
+        width: 100%;
+      }
+
+      .actions,
+      .field-grid,
+      .preset-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .time {
+        font-size: clamp(5rem, 24vw, 8rem);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="stage" aria-live="polite">
+      <div class="topbar">
+        <div class="group">
+          <p class="group-label">目前組別</p>
+          <h1 id="groupTitle">第 1 組</h1>
+        </div>
+        <div class="phase-pill" id="phasePill">報告</div>
+      </div>
+
+      <div class="timer-wrap">
+        <div class="timer">
+          <div class="time" id="timeDisplay">06:00</div>
+          <div class="status" id="statusText">準備開始報告</div>
+          <div class="progress-shell" aria-hidden="true">
+            <div class="progress" id="progressBar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="button primary" id="startPauseBtn" type="button">開始</button>
+        <button class="button" id="resetBtn" type="button">重設本段</button>
+        <button class="button" id="skipBtn" type="button">切到 QA</button>
+        <button class="button danger" id="nextGroupBtn" type="button">下一組</button>
+      </div>
+    </section>
+
+    <aside class="side">
+      <div class="settings">
+        <section class="section">
+          <h2 class="section-title">時間設定</h2>
+          <div class="field-grid">
+            <label>
+              報告分鐘
+              <input id="reportMinutes" type="number" min="0" max="99" step="1" value="6">
+            </label>
+            <label>
+              報告秒數
+              <input id="reportSeconds" type="number" min="0" max="59" step="1" value="0">
+            </label>
+            <label>
+              QA 分鐘
+              <input id="qaMinutes" type="number" min="0" max="99" step="1" value="7">
+            </label>
+            <label>
+              QA 秒數
+              <input id="qaSeconds" type="number" min="0" max="59" step="1" value="0">
+            </label>
+          </div>
+          <div class="preset-grid">
+            <button class="button small" id="presetDefaultBtn" type="button">6 + 7 分鐘</button>
+            <button class="button small" id="presetShortBtn" type="button">測試 40 + 40 秒</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">提醒設定</h2>
+          <div class="field-grid">
+            <label>
+              剩餘分鐘
+              <input id="warningMinutes" type="number" min="0" max="99" step="1" value="0">
+            </label>
+            <label>
+              剩餘秒數
+              <input id="warningSeconds" type="number" min="0" max="59" step="1" value="30">
+            </label>
+          </div>
+          <label class="toggle-row">
+            <span>報告後自動進入 QA</span>
+            <input id="autoAdvance" type="checkbox" checked>
+          </label>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">鈴聲</h2>
+          <div class="sound-state">
+            <p class="hint"><strong id="soundStatus">尚未啟用聲音</strong></p>
+            <p class="hint">請先按「啟用/測試鈴聲」，並把電腦與喇叭音量調高。瀏覽器通常需要一次點擊後才允許播放大聲提示音。</p>
+          </div>
+          <button class="button primary" id="soundBtn" type="button">啟用/測試鈴聲</button>
+          <label>
+            鈴聲音量
+            <input id="volume" type="range" min="0" max="100" value="100">
+          </label>
+        </section>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const phaseNames = {
+      report: "報告",
+      qa: "QA"
+    };
+
+    const state = {
+      group: 1,
+      phase: "report",
+      remaining: 360,
+      total: 360,
+      running: false,
+      finished: false,
+      warned: false,
+      timerId: null,
+      audioContext: null,
+      soundReady: false
+    };
+
+    const els = {
+      groupTitle: document.querySelector("#groupTitle"),
+      phasePill: document.querySelector("#phasePill"),
+      timeDisplay: document.querySelector("#timeDisplay"),
+      statusText: document.querySelector("#statusText"),
+      progressBar: document.querySelector("#progressBar"),
+      startPauseBtn: document.querySelector("#startPauseBtn"),
+      resetBtn: document.querySelector("#resetBtn"),
+      skipBtn: document.querySelector("#skipBtn"),
+      nextGroupBtn: document.querySelector("#nextGroupBtn"),
+      reportMinutes: document.querySelector("#reportMinutes"),
+      reportSeconds: document.querySelector("#reportSeconds"),
+      qaMinutes: document.querySelector("#qaMinutes"),
+      qaSeconds: document.querySelector("#qaSeconds"),
+      warningMinutes: document.querySelector("#warningMinutes"),
+      warningSeconds: document.querySelector("#warningSeconds"),
+      autoAdvance: document.querySelector("#autoAdvance"),
+      presetDefaultBtn: document.querySelector("#presetDefaultBtn"),
+      presetShortBtn: document.querySelector("#presetShortBtn"),
+      soundBtn: document.querySelector("#soundBtn"),
+      soundStatus: document.querySelector("#soundStatus"),
+      volume: document.querySelector("#volume")
+    };
+
+    function readDuration(prefix) {
+      const minutes = clampNumber(els[`${prefix}Minutes`].value, 0, 99);
+      const seconds = clampNumber(els[`${prefix}Seconds`].value, 0, 59);
+      return Math.max(1, minutes * 60 + seconds);
+    }
+
+    function readWarningTime() {
+      const minutes = clampNumber(els.warningMinutes.value, 0, 99);
+      const seconds = clampNumber(els.warningSeconds.value, 0, 59);
+      return minutes * 60 + seconds;
+    }
+
+    function clampNumber(value, min, max) {
+      const parsed = Number.parseInt(value, 10);
+      if (Number.isNaN(parsed)) return min;
+      return Math.min(max, Math.max(min, parsed));
+    }
+
+    function durationForPhase(phase) {
+      return phase === "report" ? readDuration("report") : readDuration("qa");
+    }
+
+    function resetCurrentPhase() {
+      stopTimer();
+      state.total = durationForPhase(state.phase);
+      state.remaining = state.total;
+      state.finished = false;
+      state.warned = false;
+      render();
+    }
+
+    function setPhase(phase, keepRunning = false) {
+      state.phase = phase;
+      state.total = durationForPhase(phase);
+      state.remaining = state.total;
+      state.finished = false;
+      state.warned = false;
+      if (!keepRunning) stopTimer();
+      render();
+      if (keepRunning) startTimer();
+    }
+
+    function startTimer() {
+      if (state.running || state.finished) return;
+      ensureAudioContext();
+      state.running = true;
+      state.timerId = window.setInterval(tick, 1000);
+      render();
+    }
+
+    function stopTimer() {
+      state.running = false;
+      if (state.timerId) {
+        window.clearInterval(state.timerId);
+        state.timerId = null;
+      }
+      render();
+    }
+
+    function tick() {
+      state.remaining = Math.max(0, state.remaining - 1);
+      const warningTime = readWarningTime();
+
+      if (!state.warned && warningTime > 0 && state.remaining === warningTime) {
+        state.warned = true;
+        ring("warning");
+      }
+
+      if (state.remaining === 0) {
+        ring("done");
+        if (state.phase === "report" && els.autoAdvance.checked) {
+          setPhase("qa", true);
+          return;
+        }
+
+        state.finished = true;
+        stopTimer();
+      }
+
+      render();
+    }
+
+    function nextGroup() {
+      state.group += 1;
+      setPhase("report");
+    }
+
+    function formatTime(totalSeconds) {
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    }
+
+    function render() {
+      const ratio = state.total > 0 ? state.remaining / state.total : 0;
+      const warningTime = readWarningTime();
+      const isWarning = state.remaining > 0 && warningTime > 0 && state.remaining <= warningTime;
+      const isFinished = state.finished || state.remaining === 0;
+
+      els.groupTitle.textContent = `第 ${state.group} 組`;
+      els.phasePill.textContent = phaseNames[state.phase];
+      els.timeDisplay.textContent = formatTime(state.remaining);
+      els.timeDisplay.classList.toggle("warning", isWarning && !isFinished);
+      els.timeDisplay.classList.toggle("finished", isFinished);
+      els.progressBar.style.width = `${Math.max(0, Math.min(100, ratio * 100))}%`;
+      els.progressBar.classList.toggle("warning", isWarning && !isFinished);
+      els.progressBar.classList.toggle("finished", isFinished);
+      els.startPauseBtn.textContent = state.running ? "暫停" : "開始";
+      els.skipBtn.textContent = state.phase === "report" ? "切到 QA" : "回報告";
+
+      if (isFinished) {
+        els.statusText.textContent = `${phaseNames[state.phase]}時間到`;
+      } else if (state.running) {
+        els.statusText.textContent = isWarning ? "剩最後半分鐘" : `${phaseNames[state.phase]}進行中`;
+      } else {
+        els.statusText.textContent = `準備開始${phaseNames[state.phase]}`;
+      }
+    }
+
+    function ensureAudioContext() {
+      if (!state.audioContext) {
+        state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      if (state.audioContext.state === "suspended") {
+        state.audioContext.resume();
+      }
+
+      state.soundReady = true;
+      els.soundStatus.textContent = "聲音已啟用";
+    }
+
+    function ring(kind) {
+      ensureAudioContext();
+      const ctx = state.audioContext;
+      const volume = Number(els.volume.value) / 100;
+      const now = ctx.currentTime;
+      const bursts = kind === "done" ? 4 : 2;
+      const baseFrequency = kind === "done" ? 880 : 660;
+
+      for (let i = 0; i < bursts; i += 1) {
+        const start = now + i * 0.36;
+        playTone(ctx, baseFrequency, start, 0.24, volume);
+        playTone(ctx, baseFrequency * 1.5, start + 0.02, 0.22, volume * 0.65);
+      }
+    }
+
+    function playTone(ctx, frequency, start, duration, volume) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "square";
+      osc.frequency.setValueAtTime(frequency, start);
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, volume), start + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + duration + 0.04);
+    }
+
+    function applyPreset(reportSeconds, qaSeconds) {
+      els.reportMinutes.value = Math.floor(reportSeconds / 60);
+      els.reportSeconds.value = reportSeconds % 60;
+      els.qaMinutes.value = Math.floor(qaSeconds / 60);
+      els.qaSeconds.value = qaSeconds % 60;
+      resetCurrentPhase();
+    }
+
+    els.startPauseBtn.addEventListener("click", () => {
+      if (state.running) {
+        stopTimer();
+      } else {
+        startTimer();
+      }
+    });
+
+    els.resetBtn.addEventListener("click", resetCurrentPhase);
+    els.skipBtn.addEventListener("click", () => setPhase(state.phase === "report" ? "qa" : "report"));
+    els.nextGroupBtn.addEventListener("click", nextGroup);
+    els.presetDefaultBtn.addEventListener("click", () => applyPreset(6 * 60, 7 * 60));
+    els.presetShortBtn.addEventListener("click", () => applyPreset(40, 40));
+    els.soundBtn.addEventListener("click", () => {
+      ensureAudioContext();
+      ring("done");
+    });
+
+    [
+      els.reportMinutes,
+      els.reportSeconds,
+      els.qaMinutes,
+      els.qaSeconds,
+      els.warningMinutes,
+      els.warningSeconds
+    ].forEach((input) => {
+      input.addEventListener("change", () => {
+        input.value = clampNumber(input.value, Number(input.min), Number(input.max));
+        if (!state.running) resetCurrentPhase();
+        render();
+      });
+    });
+
+    resetCurrentPhase();
+  </script>
+</body>
+</html>
