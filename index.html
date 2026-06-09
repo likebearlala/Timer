@@ -19,9 +19,7 @@
       --shadow: 0 18px 48px rgba(23, 32, 42, 0.14);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -34,35 +32,31 @@
       font-family: "Microsoft JhengHei", "Noto Sans TC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    button,
-    input {
-      font: inherit;
-    }
+    button, input { font: inherit; }
 
     .app {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 360px;
+      grid-template-columns: minmax(0, 1fr) 420px;
       gap: 20px;
       min-height: 100vh;
       padding: 22px;
+    }
+
+    .stage, .side {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: var(--shadow);
+      overflow: hidden;
     }
 
     .stage {
       display: grid;
       grid-template-rows: auto 1fr auto;
       min-width: 0;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.82);
-      box-shadow: var(--shadow);
     }
 
-    .topbar,
-    .actions,
-    .settings {
-      padding: 20px;
-    }
+    .topbar, .actions, .settings { padding: 20px; }
 
     .topbar {
       display: flex;
@@ -72,17 +66,13 @@
       border-bottom: 1px solid var(--line);
     }
 
-    .group {
-      min-width: 0;
-    }
+    .group { min-width: 0; }
 
-    .group-label,
-    .tiny-label {
+    .group-label {
       margin: 0 0 4px;
       color: var(--muted);
       font-size: 0.88rem;
       font-weight: 700;
-      letter-spacing: 0;
     }
 
     h1 {
@@ -111,31 +101,55 @@
     }
 
     .timer {
-      width: min(100%, 900px);
+      width: min(100%, 920px);
       text-align: center;
     }
 
     .time {
       font-variant-numeric: tabular-nums;
-      font-size: clamp(6.2rem, 20vw, 16rem);
+      font-size: clamp(6rem, 18vw, 15rem);
       font-weight: 900;
       line-height: 0.9;
       letter-spacing: 0;
     }
 
-    .time.warning {
-      color: var(--warn);
-    }
-
-    .time.finished {
-      color: var(--done);
-    }
+    .time.warning { color: var(--warn); }
+    .time.overtime { color: var(--done); }
 
     .status {
       margin-top: 24px;
       color: var(--muted);
-      font-size: clamp(1.15rem, 2.5vw, 2rem);
+      font-size: clamp(1.15rem, 2.3vw, 1.9rem);
       font-weight: 800;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .metric {
+      min-height: 72px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 4px;
+      font-variant-numeric: tabular-nums;
+      font-size: 1.35rem;
     }
 
     .progress-shell {
@@ -155,17 +169,12 @@
       transition: width 0.2s linear, background 0.2s;
     }
 
-    .progress.warning {
-      background: linear-gradient(90deg, var(--warn), #d3a055);
-    }
-
-    .progress.finished {
-      background: linear-gradient(90deg, var(--done), #d56b76);
-    }
+    .progress.warning { background: linear-gradient(90deg, var(--warn), #d3a055); }
+    .progress.overtime { background: linear-gradient(90deg, var(--done), #d56b76); }
 
     .actions {
       display: grid;
-      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      grid-template-columns: 1.3fr 1fr 1fr 1fr;
       gap: 12px;
       border-top: 1px solid var(--line);
     }
@@ -174,10 +183,7 @@
       display: flex;
       flex-direction: column;
       min-height: 0;
-      border: 1px solid var(--line);
-      border-radius: 8px;
       background: var(--panel);
-      box-shadow: var(--shadow);
     }
 
     .settings {
@@ -196,7 +202,7 @@
       font-size: 1.05rem;
     }
 
-    .field-grid {
+    .field-grid, .preset-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
@@ -260,42 +266,22 @@
       transition: transform 0.08s, background 0.18s, border-color 0.18s;
     }
 
-    .button:hover {
-      transform: translateY(-1px);
-    }
-
-    .button:active {
-      transform: translateY(0);
-    }
-
-    .button.primary {
-      background: var(--accent);
-      color: #fff;
-    }
-
-    .button.primary:hover {
-      background: var(--accent-dark);
-    }
-
+    .button:hover { transform: translateY(-1px); }
+    .button:active { transform: translateY(0); }
+    .button.primary { background: var(--accent); color: #fff; }
+    .button.primary:hover { background: var(--accent-dark); }
     .button.danger {
       background: #f4e4e6;
       color: var(--done);
       border-color: #e8c4c8;
     }
-
     .button.small {
-      min-height: 44px;
+      min-height: 42px;
       padding: 8px 12px;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
     }
 
-    .preset-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .sound-state {
+    .sound-state, .summary {
       display: grid;
       gap: 8px;
       padding: 12px;
@@ -303,47 +289,79 @@
       background: #f4f7f8;
     }
 
-    .sound-state strong {
-      color: var(--accent-dark);
+    .sound-state strong { color: var(--accent-dark); }
+
+    .summary {
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
     }
 
-    @media (max-width: 920px) {
-      .app {
-        grid-template-columns: 1fr;
-      }
+    .summary div {
+      padding: 10px;
+      border-radius: 8px;
+      background: #fff;
+    }
 
-      .actions {
-        grid-template-columns: 1fr 1fr;
-      }
+    .summary span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
 
-      .side {
-        min-height: auto;
-      }
+    .summary strong {
+      display: block;
+      margin-top: 4px;
+      font-variant-numeric: tabular-nums;
+      font-size: 1.1rem;
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      font-size: 0.9rem;
+    }
+
+    .history-table th,
+    .history-table td {
+      padding: 9px 8px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .history-table th {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .history-table tr:last-child td { border-bottom: 0; }
+    .history-table .over { color: var(--done); font-weight: 900; }
+    .history-table .empty {
+      color: var(--muted);
+      text-align: center;
+      white-space: normal;
+    }
+
+    @media (max-width: 980px) {
+      .app { grid-template-columns: 1fr; }
+      .actions { grid-template-columns: 1fr 1fr; }
+      .side { min-height: auto; }
     }
 
     @media (max-width: 560px) {
-      .app {
-        padding: 12px;
-      }
-
-      .topbar {
-        align-items: stretch;
-        flex-direction: column;
-      }
-
-      .phase-pill {
-        width: 100%;
-      }
-
-      .actions,
-      .field-grid,
-      .preset-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .time {
-        font-size: clamp(5rem, 24vw, 8rem);
-      }
+      .app { padding: 12px; }
+      .topbar { align-items: stretch; flex-direction: column; }
+      .phase-pill { width: 100%; }
+      .actions, .field-grid, .preset-grid, .metrics, .summary { grid-template-columns: 1fr; }
+      .time { font-size: clamp(4.4rem, 22vw, 8rem); }
+      .history-table { font-size: 0.82rem; }
+      .history-table th, .history-table td { padding: 8px 5px; }
     }
   </style>
 </head>
@@ -362,6 +380,20 @@
         <div class="timer">
           <div class="time" id="timeDisplay">06:00</div>
           <div class="status" id="statusText">準備開始報告</div>
+          <div class="metrics">
+            <div class="metric">
+              <span>原定時間</span>
+              <strong id="plannedMetric">06:00</strong>
+            </div>
+            <div class="metric">
+              <span>實際已用</span>
+              <strong id="elapsedMetric">00:00</strong>
+            </div>
+            <div class="metric">
+              <span>超時</span>
+              <strong id="overtimeMetric">00:00</strong>
+            </div>
+          </div>
           <div class="progress-shell" aria-hidden="true">
             <div class="progress" id="progressBar"></div>
           </div>
@@ -417,8 +449,8 @@
             </label>
           </div>
           <label class="toggle-row">
-            <span>報告後自動進入 QA</span>
-            <input id="autoAdvance" type="checkbox" checked>
+            <span>報告時間到自動進入 QA</span>
+            <input id="autoAdvance" type="checkbox">
           </label>
         </section>
 
@@ -426,13 +458,45 @@
           <h2 class="section-title">鈴聲</h2>
           <div class="sound-state">
             <p class="hint"><strong id="soundStatus">尚未啟用聲音</strong></p>
-            <p class="hint">請先按「啟用/測試鈴聲」，並把電腦與喇叭音量調高。瀏覽器通常需要一次點擊後才允許播放大聲提示音。</p>
+            <p class="hint">請先按「啟用/測試鈴聲」，並把電腦與喇叭音量調高。瀏覽器通常需要一次點擊後才允許播放提示音。</p>
           </div>
           <button class="button primary" id="soundBtn" type="button">啟用/測試鈴聲</button>
           <label>
             鈴聲音量
             <input id="volume" type="range" min="0" max="100" value="100">
           </label>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">後臺紀錄</h2>
+          <div class="summary">
+            <div>
+              <span>已記錄段落</span>
+              <strong id="recordCount">0</strong>
+            </div>
+            <div>
+              <span>累計超時</span>
+              <strong id="totalOvertime">00:00</strong>
+            </div>
+          </div>
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>組別</th>
+                <th>階段</th>
+                <th>原定</th>
+                <th>實際</th>
+                <th>超時</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody">
+              <tr><td class="empty" colspan="5">尚無紀錄</td></tr>
+            </tbody>
+          </table>
+          <div class="preset-grid">
+            <button class="button small" id="downloadCsvBtn" type="button">下載 CSV</button>
+            <button class="button small danger" id="clearHistoryBtn" type="button">清除紀錄</button>
+          </div>
         </section>
       </div>
     </aside>
@@ -447,14 +511,17 @@
     const state = {
       group: 1,
       phase: "report",
-      remaining: 360,
-      total: 360,
+      planned: 360,
+      elapsed: 0,
       running: false,
-      finished: false,
       warned: false,
+      doneRang: false,
       timerId: null,
       audioContext: null,
-      soundReady: false
+      soundReady: false,
+      currentRecordId: null,
+      startedAt: null,
+      records: []
     };
 
     const els = {
@@ -462,6 +529,9 @@
       phasePill: document.querySelector("#phasePill"),
       timeDisplay: document.querySelector("#timeDisplay"),
       statusText: document.querySelector("#statusText"),
+      plannedMetric: document.querySelector("#plannedMetric"),
+      elapsedMetric: document.querySelector("#elapsedMetric"),
+      overtimeMetric: document.querySelector("#overtimeMetric"),
       progressBar: document.querySelector("#progressBar"),
       startPauseBtn: document.querySelector("#startPauseBtn"),
       resetBtn: document.querySelector("#resetBtn"),
@@ -478,7 +548,12 @@
       presetShortBtn: document.querySelector("#presetShortBtn"),
       soundBtn: document.querySelector("#soundBtn"),
       soundStatus: document.querySelector("#soundStatus"),
-      volume: document.querySelector("#volume")
+      volume: document.querySelector("#volume"),
+      recordCount: document.querySelector("#recordCount"),
+      totalOvertime: document.querySelector("#totalOvertime"),
+      historyBody: document.querySelector("#historyBody"),
+      downloadCsvBtn: document.querySelector("#downloadCsvBtn"),
+      clearHistoryBtn: document.querySelector("#clearHistoryBtn")
     };
 
     function readDuration(prefix) {
@@ -503,96 +578,162 @@
       return phase === "report" ? readDuration("report") : readDuration("qa");
     }
 
+    function remainingSeconds() {
+      return state.planned - state.elapsed;
+    }
+
+    function overtimeSeconds() {
+      return Math.max(0, state.elapsed - state.planned);
+    }
+
     function resetCurrentPhase() {
-      stopTimer();
-      state.total = durationForPhase(state.phase);
-      state.remaining = state.total;
-      state.finished = false;
+      stopTimer(false);
+      state.planned = durationForPhase(state.phase);
+      state.elapsed = 0;
       state.warned = false;
+      state.doneRang = false;
+      state.currentRecordId = null;
+      state.startedAt = null;
       render();
     }
 
     function setPhase(phase, keepRunning = false) {
+      finalizeCurrentRecord();
       state.phase = phase;
-      state.total = durationForPhase(phase);
-      state.remaining = state.total;
-      state.finished = false;
+      state.planned = durationForPhase(phase);
+      state.elapsed = 0;
       state.warned = false;
-      if (!keepRunning) stopTimer();
+      state.doneRang = false;
+      state.currentRecordId = null;
+      state.startedAt = null;
+      if (!keepRunning) stopTimer(false);
+      if (keepRunning) beginRecordSession();
       render();
-      if (keepRunning) startTimer();
     }
 
     function startTimer() {
-      if (state.running || state.finished) return;
+      if (state.running) return;
       ensureAudioContext();
+      beginRecordSession();
       state.running = true;
       state.timerId = window.setInterval(tick, 1000);
       render();
     }
 
-    function stopTimer() {
+    function stopTimer(shouldRecord = true) {
       state.running = false;
       if (state.timerId) {
         window.clearInterval(state.timerId);
         state.timerId = null;
       }
+      if (shouldRecord) finalizeCurrentRecord();
       render();
     }
 
     function tick() {
-      state.remaining = Math.max(0, state.remaining - 1);
+      state.elapsed += 1;
+      const remaining = remainingSeconds();
       const warningTime = readWarningTime();
 
-      if (!state.warned && warningTime > 0 && state.remaining === warningTime) {
+      if (!state.warned && warningTime > 0 && remaining === warningTime) {
         state.warned = true;
         ring("warning");
       }
 
-      if (state.remaining === 0) {
+      if (!state.doneRang && remaining === 0) {
+        state.doneRang = true;
         ring("done");
         if (state.phase === "report" && els.autoAdvance.checked) {
           setPhase("qa", true);
           return;
         }
-
-        state.finished = true;
-        stopTimer();
       }
 
       render();
     }
 
     function nextGroup() {
+      finalizeCurrentRecord();
+      stopTimer(false);
       state.group += 1;
-      setPhase("report");
+      state.phase = "report";
+      state.planned = durationForPhase("report");
+      state.elapsed = 0;
+      state.warned = false;
+      state.doneRang = false;
+      state.currentRecordId = null;
+      state.startedAt = null;
+      render();
+    }
+
+    function beginRecordSession() {
+      if (!state.currentRecordId) {
+        state.currentRecordId = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+        state.startedAt = Date.now();
+      }
+    }
+
+    function finalizeCurrentRecord() {
+      if (state.elapsed <= 0) return;
+      beginRecordSession();
+      const duplicate = state.records.find((record) => record.id === state.currentRecordId);
+      if (duplicate) {
+        duplicate.planned = state.planned;
+        duplicate.elapsed = state.elapsed;
+        duplicate.overtime = overtimeSeconds();
+      } else {
+        state.records.push({
+          id: state.currentRecordId,
+          group: state.group,
+          phase: state.phase,
+          planned: state.planned,
+          elapsed: state.elapsed,
+          overtime: overtimeSeconds(),
+          startedAt: state.startedAt
+        });
+      }
+      saveRecords();
+      renderHistory();
     }
 
     function formatTime(totalSeconds) {
-      const minutes = Math.floor(totalSeconds / 60);
-      const seconds = totalSeconds % 60;
+      const absSeconds = Math.abs(totalSeconds);
+      const minutes = Math.floor(absSeconds / 60);
+      const seconds = absSeconds % 60;
       return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
     }
 
+    function formatMainTime() {
+      const remaining = remainingSeconds();
+      if (remaining < 0) return `+${formatTime(Math.abs(remaining))}`;
+      return formatTime(remaining);
+    }
+
     function render() {
-      const ratio = state.total > 0 ? state.remaining / state.total : 0;
+      const remaining = remainingSeconds();
       const warningTime = readWarningTime();
-      const isWarning = state.remaining > 0 && warningTime > 0 && state.remaining <= warningTime;
-      const isFinished = state.finished || state.remaining === 0;
+      const isWarning = remaining > 0 && warningTime > 0 && remaining <= warningTime;
+      const isOvertime = remaining < 0;
+      const ratio = state.planned > 0 ? Math.max(0, Math.min(1, remaining / state.planned)) : 0;
 
       els.groupTitle.textContent = `第 ${state.group} 組`;
       els.phasePill.textContent = phaseNames[state.phase];
-      els.timeDisplay.textContent = formatTime(state.remaining);
-      els.timeDisplay.classList.toggle("warning", isWarning && !isFinished);
-      els.timeDisplay.classList.toggle("finished", isFinished);
-      els.progressBar.style.width = `${Math.max(0, Math.min(100, ratio * 100))}%`;
-      els.progressBar.classList.toggle("warning", isWarning && !isFinished);
-      els.progressBar.classList.toggle("finished", isFinished);
-      els.startPauseBtn.textContent = state.running ? "暫停" : "開始";
+      els.timeDisplay.textContent = formatMainTime();
+      els.timeDisplay.classList.toggle("warning", isWarning && !isOvertime);
+      els.timeDisplay.classList.toggle("overtime", isOvertime);
+      els.plannedMetric.textContent = formatTime(state.planned);
+      els.elapsedMetric.textContent = formatTime(state.elapsed);
+      els.overtimeMetric.textContent = formatTime(overtimeSeconds());
+      els.progressBar.style.width = `${ratio * 100}%`;
+      els.progressBar.classList.toggle("warning", isWarning && !isOvertime);
+      els.progressBar.classList.toggle("overtime", isOvertime);
+      els.startPauseBtn.textContent = state.running ? "暫停/結束本段" : "開始";
       els.skipBtn.textContent = state.phase === "report" ? "切到 QA" : "回報告";
 
-      if (isFinished) {
-        els.statusText.textContent = `${phaseNames[state.phase]}時間到`;
+      if (isOvertime) {
+        els.statusText.textContent = `${phaseNames[state.phase]}超時 ${formatTime(overtimeSeconds())}`;
+      } else if (remaining === 0) {
+        els.statusText.textContent = `${phaseNames[state.phase]}時間到，繼續計算超時`;
       } else if (state.running) {
         els.statusText.textContent = isWarning ? "剩最後半分鐘" : `${phaseNames[state.phase]}進行中`;
       } else {
@@ -600,15 +741,34 @@
       }
     }
 
+    function renderHistory() {
+      const totalOvertime = state.records.reduce((sum, record) => sum + record.overtime, 0);
+      els.recordCount.textContent = String(state.records.length);
+      els.totalOvertime.textContent = formatTime(totalOvertime);
+
+      if (state.records.length === 0) {
+        els.historyBody.innerHTML = '<tr><td class="empty" colspan="5">尚無紀錄</td></tr>';
+        return;
+      }
+
+      els.historyBody.innerHTML = state.records.map((record) => `
+        <tr>
+          <td>第 ${record.group} 組</td>
+          <td>${phaseNames[record.phase]}</td>
+          <td>${formatTime(record.planned)}</td>
+          <td>${formatTime(record.elapsed)}</td>
+          <td class="${record.overtime > 0 ? "over" : ""}">${formatTime(record.overtime)}</td>
+        </tr>
+      `).join("");
+    }
+
     function ensureAudioContext() {
       if (!state.audioContext) {
         state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       }
-
       if (state.audioContext.state === "suspended") {
         state.audioContext.resume();
       }
-
       state.soundReady = true;
       els.soundStatus.textContent = "聲音已啟用";
     }
@@ -650,9 +810,47 @@
       resetCurrentPhase();
     }
 
+    function saveRecords() {
+      localStorage.setItem("presentationTimerRecords", JSON.stringify(state.records));
+    }
+
+    function loadRecords() {
+      try {
+        state.records = JSON.parse(localStorage.getItem("presentationTimerRecords") || "[]");
+      } catch {
+        state.records = [];
+      }
+    }
+
+    function downloadCsv() {
+      const header = ["組別", "階段", "原定秒數", "實際秒數", "超時秒數", "原定", "實際", "超時"];
+      const rows = state.records.map((record) => [
+        `第 ${record.group} 組`,
+        phaseNames[record.phase],
+        record.planned,
+        record.elapsed,
+        record.overtime,
+        formatTime(record.planned),
+        formatTime(record.elapsed),
+        formatTime(record.overtime)
+      ]);
+      const csv = [header, ...rows].map((row) => row.map(csvCell).join(",")).join("\n");
+      const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "presentation-timer-records.csv";
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function csvCell(value) {
+      return `"${String(value).replaceAll('"', '""')}"`;
+    }
+
     els.startPauseBtn.addEventListener("click", () => {
       if (state.running) {
-        stopTimer();
+        stopTimer(true);
       } else {
         startTimer();
       }
@@ -666,6 +864,12 @@
     els.soundBtn.addEventListener("click", () => {
       ensureAudioContext();
       ring("done");
+    });
+    els.downloadCsvBtn.addEventListener("click", downloadCsv);
+    els.clearHistoryBtn.addEventListener("click", () => {
+      state.records = [];
+      saveRecords();
+      renderHistory();
     });
 
     [
@@ -683,7 +887,9 @@
       });
     });
 
+    loadRecords();
     resetCurrentPhase();
+    renderHistory();
   </script>
 </body>
 </html>
