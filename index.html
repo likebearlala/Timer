@@ -32,7 +32,7 @@
       font-family: "Microsoft JhengHei", "Noto Sans TC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    button, input { font: inherit; }
+    button, input, select { font: inherit; }
 
     .app {
       display: grid;
@@ -250,7 +250,8 @@
       font-weight: 700;
     }
 
-    input {
+    input,
+    select {
       width: 100%;
       min-height: 46px;
       border: 1px solid var(--line);
@@ -561,11 +562,19 @@
               <p class="hint"><strong id="soundStatus">尚未啟用聲音</strong></p>
               <p class="hint">請先按「啟用/測試鈴聲」，並把電腦與喇叭音量調高。瀏覽器通常需要一次點擊後才允許播放提示音。</p>
             </div>
-            <button class="button primary" id="soundBtn" type="button">啟用/測試鈴聲</button>
-            <label>
-              鈴聲音量
-              <input id="volume" type="range" min="0" max="100" value="100">
-            </label>
+          <button class="button primary" id="soundBtn" type="button">啟用/測試鈴聲</button>
+          <label>
+            鈴聲樣式
+            <select id="soundTheme">
+              <option value="chime">清亮鐘聲</option>
+              <option value="marimba">柔和木琴</option>
+              <option value="bell">教室大鈴</option>
+            </select>
+          </label>
+          <label>
+            鈴聲音量
+            <input id="volume" type="range" min="0" max="100" value="100">
+          </label>
           </section>
         </div>
 
@@ -675,6 +684,7 @@
       presetShortBtn: document.querySelector("#presetShortBtn"),
       soundBtn: document.querySelector("#soundBtn"),
       soundStatus: document.querySelector("#soundStatus"),
+      soundTheme: document.querySelector("#soundTheme"),
       volume: document.querySelector("#volume"),
       recordCount: document.querySelector("#recordCount"),
       totalOvertime: document.querySelector("#totalOvertime"),
@@ -924,25 +934,52 @@
       const ctx = state.audioContext;
       const volume = Number(els.volume.value) / 100;
       const now = ctx.currentTime;
-      const bursts = kind === "done" ? 4 : 2;
-      const baseFrequency = kind === "done" ? 880 : 660;
+      const theme = els.soundTheme.value;
 
-      for (let i = 0; i < bursts; i += 1) {
-        const start = now + i * 0.36;
-        playTone(ctx, baseFrequency, start, 0.24, volume);
-        playTone(ctx, baseFrequency * 1.5, start + 0.02, 0.22, volume * 0.65);
+      if (theme === "marimba") {
+        playPattern(ctx, kind === "done" ? [523.25, 659.25, 783.99, 1046.5] : [659.25, 783.99], now, 0.22, 0.2, volume, "triangle");
+        return;
       }
+
+      if (theme === "bell") {
+        playBellPattern(ctx, kind, now, volume);
+        return;
+      }
+
+      playPattern(ctx, kind === "done" ? [659.25, 880, 987.77, 1318.51] : [880, 1174.66], now, 0.32, 0.28, volume, "sine");
     }
 
-    function playTone(ctx, frequency, start, duration, volume) {
+    function playPattern(ctx, notes, start, spacing, duration, volume, wave) {
+      notes.forEach((frequency, index) => {
+        playTone(ctx, frequency, start + index * spacing, duration, volume, wave);
+        playTone(ctx, frequency * 2, start + index * spacing + 0.01, duration * 0.8, volume * 0.18, "sine");
+      });
+    }
+
+    function playBellPattern(ctx, kind, start, volume) {
+      const notes = kind === "done" ? [880, 880, 880, 1174.66] : [784, 1046.5];
+      notes.forEach((frequency, index) => {
+        const noteStart = start + index * 0.34;
+        playTone(ctx, frequency, noteStart, 0.26, volume, "square");
+        playTone(ctx, frequency * 1.5, noteStart + 0.015, 0.2, volume * 0.45, "triangle");
+      });
+    }
+
+    function playTone(ctx, frequency, start, duration, volume, wave = "sine") {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      osc.type = "square";
+      const filter = ctx.createBiquadFilter();
+      osc.type = wave;
       osc.frequency.setValueAtTime(frequency, start);
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(wave === "square" ? 2200 : 3600, start);
+      filter.Q.setValueAtTime(0.6, start);
       gain.gain.setValueAtTime(0.0001, start);
-      gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, volume), start + 0.015);
+      gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, volume * 0.75), start + 0.018);
+      gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, volume * 0.28), start + duration * 0.45);
       gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
-      osc.connect(gain);
+      osc.connect(filter);
+      filter.connect(gain);
       gain.connect(ctx.destination);
       osc.start(start);
       osc.stop(start + duration + 0.04);
@@ -1088,6 +1125,24 @@
       }
     }
 
+    function saveSoundSettings() {
+      localStorage.setItem("presentationTimerSound", JSON.stringify({
+        theme: els.soundTheme.value,
+        volume: els.volume.value
+      }));
+    }
+
+    function loadSoundSettings() {
+      try {
+        const saved = JSON.parse(localStorage.getItem("presentationTimerSound") || "{}");
+        if (saved.theme) els.soundTheme.value = saved.theme;
+        if (saved.volume) els.volume.value = saved.volume;
+      } catch {
+        els.soundTheme.value = "chime";
+        els.volume.value = "100";
+      }
+    }
+
     function saveRecords() {
       localStorage.setItem("presentationTimerRecords", JSON.stringify(state.records));
     }
@@ -1143,6 +1198,9 @@
       ensureAudioContext();
       ring("done");
     });
+    els.soundTheme.addEventListener("change", saveSoundSettings);
+    els.volume.addEventListener("change", saveSoundSettings);
+    els.volume.addEventListener("input", saveSoundSettings);
     els.downloadCsvBtn.addEventListener("click", downloadCsv);
     els.clearHistoryBtn.addEventListener("click", () => {
       state.records = [];
@@ -1190,6 +1248,7 @@
       });
     });
 
+    loadSoundSettings();
     loadSchedule();
     loadRecords();
     resetCurrentPhase();
