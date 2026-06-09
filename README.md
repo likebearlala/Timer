@@ -6,7 +6,13 @@
 
 ## 開啟方式
 
-直接用瀏覽器打開 `index.html` 即可使用，不需要安裝套件或啟動伺服器。
+線上直接使用：
+
+[https://likebearlala.github.io/Timer/](https://likebearlala.github.io/Timer/)
+
+這個網址是 GitHub Pages 發布出來的可操作計時器頁面，不需要下載檔案。GitHub repo 頁面主要是用來查看原始碼與使用手冊。
+
+也可以在本機直接用瀏覽器打開 `index.html`，不需要安裝套件或啟動伺服器。
 
 本機檔案位置：
 
