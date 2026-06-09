@@ -192,6 +192,40 @@
       overflow: auto;
     }
 
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+      background: #f4f7f8;
+    }
+
+    .tab-button {
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .tab-button.active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .tab-panel {
+      display: none;
+      gap: 20px;
+    }
+
+    .tab-panel.active {
+      display: grid;
+    }
+
     .section {
       display: grid;
       gap: 12px;
@@ -202,7 +236,7 @@
       font-size: 1.05rem;
     }
 
-    .field-grid, .preset-grid {
+    .field-grid, .preset-grid, .schedule-form {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
@@ -316,6 +350,64 @@
       font-size: 1.1rem;
     }
 
+    .schedule-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .schedule-item {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto auto auto auto;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .schedule-item.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(15, 123, 108, 0.14);
+    }
+
+    .schedule-number {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: #e8eef1;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 900;
+    }
+
+    .schedule-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 900;
+    }
+
+    .icon-button {
+      width: 34px;
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f4f7f8;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .icon-button.danger {
+      color: var(--done);
+      background: #f4e4e6;
+      border-color: #e8c4c8;
+    }
+
     .history-table {
       width: 100%;
       border-collapse: collapse;
@@ -358,7 +450,10 @@
       .app { padding: 12px; }
       .topbar { align-items: stretch; flex-direction: column; }
       .phase-pill { width: 100%; }
-      .actions, .field-grid, .preset-grid, .metrics, .summary { grid-template-columns: 1fr; }
+      .actions, .field-grid, .preset-grid, .metrics, .summary, .schedule-form { grid-template-columns: 1fr; }
+      .tabs { grid-template-columns: 1fr; }
+      .schedule-item { grid-template-columns: auto minmax(0, 1fr) auto auto; }
+      .schedule-item .set-current { grid-column: 2 / -1; width: 100%; }
       .time { font-size: clamp(4.4rem, 22vw, 8rem); }
       .history-table { font-size: 0.82rem; }
       .history-table th, .history-table td { padding: 8px 5px; }
@@ -409,95 +504,123 @@
     </section>
 
     <aside class="side">
+      <nav class="tabs" aria-label="後臺功能">
+        <button class="tab-button active" type="button" data-tab="settings">設定</button>
+        <button class="tab-button" type="button" data-tab="schedule">組別順序</button>
+        <button class="tab-button" type="button" data-tab="history">歷史紀錄</button>
+      </nav>
       <div class="settings">
-        <section class="section">
-          <h2 class="section-title">時間設定</h2>
-          <div class="field-grid">
-            <label>
-              報告分鐘
-              <input id="reportMinutes" type="number" min="0" max="99" step="1" value="6">
-            </label>
-            <label>
-              報告秒數
-              <input id="reportSeconds" type="number" min="0" max="59" step="1" value="0">
-            </label>
-            <label>
-              QA 分鐘
-              <input id="qaMinutes" type="number" min="0" max="99" step="1" value="7">
-            </label>
-            <label>
-              QA 秒數
-              <input id="qaSeconds" type="number" min="0" max="59" step="1" value="0">
-            </label>
-          </div>
-          <div class="preset-grid">
-            <button class="button small" id="presetDefaultBtn" type="button">6 + 7 分鐘</button>
-            <button class="button small" id="presetShortBtn" type="button">測試 40 + 40 秒</button>
-          </div>
-        </section>
-
-        <section class="section">
-          <h2 class="section-title">提醒設定</h2>
-          <div class="field-grid">
-            <label>
-              剩餘分鐘
-              <input id="warningMinutes" type="number" min="0" max="99" step="1" value="0">
-            </label>
-            <label>
-              剩餘秒數
-              <input id="warningSeconds" type="number" min="0" max="59" step="1" value="30">
-            </label>
-          </div>
-          <label class="toggle-row">
-            <span>報告時間到自動進入 QA</span>
-            <input id="autoAdvance" type="checkbox">
-          </label>
-        </section>
-
-        <section class="section">
-          <h2 class="section-title">鈴聲</h2>
-          <div class="sound-state">
-            <p class="hint"><strong id="soundStatus">尚未啟用聲音</strong></p>
-            <p class="hint">請先按「啟用/測試鈴聲」，並把電腦與喇叭音量調高。瀏覽器通常需要一次點擊後才允許播放提示音。</p>
-          </div>
-          <button class="button primary" id="soundBtn" type="button">啟用/測試鈴聲</button>
-          <label>
-            鈴聲音量
-            <input id="volume" type="range" min="0" max="100" value="100">
-          </label>
-        </section>
-
-        <section class="section">
-          <h2 class="section-title">後臺紀錄</h2>
-          <div class="summary">
-            <div>
-              <span>已記錄段落</span>
-              <strong id="recordCount">0</strong>
+        <div class="tab-panel active" id="settingsPanel">
+          <section class="section">
+            <h2 class="section-title">時間設定</h2>
+            <div class="field-grid">
+              <label>
+                報告分鐘
+                <input id="reportMinutes" type="number" min="0" max="99" step="1" value="6">
+              </label>
+              <label>
+                報告秒數
+                <input id="reportSeconds" type="number" min="0" max="59" step="1" value="0">
+              </label>
+              <label>
+                QA 分鐘
+                <input id="qaMinutes" type="number" min="0" max="99" step="1" value="7">
+              </label>
+              <label>
+                QA 秒數
+                <input id="qaSeconds" type="number" min="0" max="59" step="1" value="0">
+              </label>
             </div>
-            <div>
-              <span>累計超時</span>
-              <strong id="totalOvertime">00:00</strong>
+            <div class="preset-grid">
+              <button class="button small" id="presetDefaultBtn" type="button">6 + 7 分鐘</button>
+              <button class="button small" id="presetShortBtn" type="button">測試 40 + 40 秒</button>
             </div>
-          </div>
-          <table class="history-table">
-            <thead>
-              <tr>
-                <th>組別</th>
-                <th>階段</th>
-                <th>原定</th>
-                <th>實際</th>
-                <th>超時</th>
-              </tr>
-            </thead>
-            <tbody id="historyBody">
-              <tr><td class="empty" colspan="5">尚無紀錄</td></tr>
-            </tbody>
-          </table>
-          <div class="preset-grid">
-            <button class="button small" id="downloadCsvBtn" type="button">下載 CSV</button>
-            <button class="button small danger" id="clearHistoryBtn" type="button">清除紀錄</button>
-          </div>
-        </section>
+          </section>
+
+          <section class="section">
+            <h2 class="section-title">提醒設定</h2>
+            <div class="field-grid">
+              <label>
+                剩餘分鐘
+                <input id="warningMinutes" type="number" min="0" max="99" step="1" value="0">
+              </label>
+              <label>
+                剩餘秒數
+                <input id="warningSeconds" type="number" min="0" max="59" step="1" value="30">
+              </label>
+            </div>
+            <label class="toggle-row">
+              <span>報告時間到自動進入 QA</span>
+              <input id="autoAdvance" type="checkbox">
+            </label>
+          </section>
+
+          <section class="section">
+            <h2 class="section-title">鈴聲</h2>
+            <div class="sound-state">
+              <p class="hint"><strong id="soundStatus">尚未啟用聲音</strong></p>
+              <p class="hint">請先按「啟用/測試鈴聲」，並把電腦與喇叭音量調高。瀏覽器通常需要一次點擊後才允許播放提示音。</p>
+            </div>
+            <button class="button primary" id="soundBtn" type="button">啟用/測試鈴聲</button>
+            <label>
+              鈴聲音量
+              <input id="volume" type="range" min="0" max="100" value="100">
+            </label>
+          </section>
+        </div>
+
+        <div class="tab-panel" id="schedulePanel">
+          <section class="section">
+            <h2 class="section-title">組別順序</h2>
+            <p class="hint">按「設為目前」可直接跳到該組；按「下一組」會照這份順序前進。</p>
+            <div class="schedule-form">
+              <label>
+                組別名稱
+                <input id="groupNameInput" type="text" placeholder="例如：第 1 組、A 組、專題名稱">
+              </label>
+              <button class="button primary" id="addGroupBtn" type="button">新增組別</button>
+            </div>
+            <div class="preset-grid">
+              <button class="button small" id="addDefaultGroupsBtn" type="button">建立 8 組</button>
+              <button class="button small danger" id="clearScheduleBtn" type="button">清空順序</button>
+            </div>
+            <div class="schedule-list" id="scheduleList"></div>
+          </section>
+        </div>
+
+        <div class="tab-panel" id="historyPanel">
+          <section class="section">
+            <h2 class="section-title">後臺紀錄</h2>
+            <div class="summary">
+              <div>
+                <span>已記錄段落</span>
+                <strong id="recordCount">0</strong>
+              </div>
+              <div>
+                <span>累計超時</span>
+                <strong id="totalOvertime">00:00</strong>
+              </div>
+            </div>
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>組別</th>
+                  <th>階段</th>
+                  <th>原定</th>
+                  <th>實際</th>
+                  <th>超時</th>
+                </tr>
+              </thead>
+              <tbody id="historyBody">
+                <tr><td class="empty" colspan="5">尚無紀錄</td></tr>
+              </tbody>
+            </table>
+            <div class="preset-grid">
+              <button class="button small" id="downloadCsvBtn" type="button">下載 CSV</button>
+              <button class="button small danger" id="clearHistoryBtn" type="button">清除紀錄</button>
+            </div>
+          </section>
+        </div>
       </div>
     </aside>
   </main>
@@ -521,10 +644,14 @@
       soundReady: false,
       currentRecordId: null,
       startedAt: null,
+      currentGroupIndex: 0,
+      schedule: [],
       records: []
     };
 
     const els = {
+      tabButtons: document.querySelectorAll(".tab-button"),
+      tabPanels: document.querySelectorAll(".tab-panel"),
       groupTitle: document.querySelector("#groupTitle"),
       phasePill: document.querySelector("#phasePill"),
       timeDisplay: document.querySelector("#timeDisplay"),
@@ -553,7 +680,12 @@
       totalOvertime: document.querySelector("#totalOvertime"),
       historyBody: document.querySelector("#historyBody"),
       downloadCsvBtn: document.querySelector("#downloadCsvBtn"),
-      clearHistoryBtn: document.querySelector("#clearHistoryBtn")
+      clearHistoryBtn: document.querySelector("#clearHistoryBtn"),
+      groupNameInput: document.querySelector("#groupNameInput"),
+      addGroupBtn: document.querySelector("#addGroupBtn"),
+      addDefaultGroupsBtn: document.querySelector("#addDefaultGroupsBtn"),
+      clearScheduleBtn: document.querySelector("#clearScheduleBtn"),
+      scheduleList: document.querySelector("#scheduleList")
     };
 
     function readDuration(prefix) {
@@ -584,6 +716,13 @@
 
     function overtimeSeconds() {
       return Math.max(0, state.elapsed - state.planned);
+    }
+
+    function currentGroupName() {
+      if (state.schedule.length > 0) {
+        return state.schedule[state.currentGroupIndex]?.name || `第 ${state.currentGroupIndex + 1} 組`;
+      }
+      return `第 ${state.group} 組`;
     }
 
     function resetCurrentPhase() {
@@ -655,7 +794,12 @@
     function nextGroup() {
       finalizeCurrentRecord();
       stopTimer(false);
-      state.group += 1;
+      if (state.schedule.length > 0) {
+        state.currentGroupIndex += 1;
+        state.group = state.currentGroupIndex + 1;
+      } else {
+        state.group += 1;
+      }
       state.phase = "report";
       state.planned = durationForPhase("report");
       state.elapsed = 0;
@@ -678,6 +822,7 @@
       beginRecordSession();
       const duplicate = state.records.find((record) => record.id === state.currentRecordId);
       if (duplicate) {
+        duplicate.groupName = currentGroupName();
         duplicate.planned = state.planned;
         duplicate.elapsed = state.elapsed;
         duplicate.overtime = overtimeSeconds();
@@ -685,6 +830,7 @@
         state.records.push({
           id: state.currentRecordId,
           group: state.group,
+          groupName: currentGroupName(),
           phase: state.phase,
           planned: state.planned,
           elapsed: state.elapsed,
@@ -716,7 +862,7 @@
       const isOvertime = remaining < 0;
       const ratio = state.planned > 0 ? Math.max(0, Math.min(1, remaining / state.planned)) : 0;
 
-      els.groupTitle.textContent = `第 ${state.group} 組`;
+      els.groupTitle.textContent = currentGroupName();
       els.phasePill.textContent = phaseNames[state.phase];
       els.timeDisplay.textContent = formatMainTime();
       els.timeDisplay.classList.toggle("warning", isWarning && !isOvertime);
@@ -753,7 +899,7 @@
 
       els.historyBody.innerHTML = state.records.map((record) => `
         <tr>
-          <td>第 ${record.group} 組</td>
+          <td>${record.groupName || `第 ${record.group} 組`}</td>
           <td>${phaseNames[record.phase]}</td>
           <td>${formatTime(record.planned)}</td>
           <td>${formatTime(record.elapsed)}</td>
@@ -810,6 +956,138 @@
       resetCurrentPhase();
     }
 
+    function switchTab(tabName) {
+      els.tabButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.tab === tabName);
+      });
+      els.tabPanels.forEach((panel) => {
+        panel.classList.toggle("active", panel.id === `${tabName}Panel`);
+      });
+    }
+
+    function addGroup(name) {
+      const trimmed = name.trim();
+      if (!trimmed) return;
+      state.schedule.push({
+        id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        name: trimmed
+      });
+      if (state.schedule.length === 1) {
+        state.currentGroupIndex = 0;
+        state.group = 1;
+      }
+      els.groupNameInput.value = "";
+      saveSchedule();
+      renderSchedule();
+      render();
+    }
+
+    function createDefaultGroups() {
+      state.schedule = Array.from({ length: 8 }, (_, index) => ({
+        id: `default-${Date.now()}-${index}`,
+        name: `第 ${index + 1} 組`
+      }));
+      state.currentGroupIndex = 0;
+      state.group = 1;
+      saveSchedule();
+      renderSchedule();
+      render();
+    }
+
+    function setCurrentGroup(index) {
+      finalizeCurrentRecord();
+      stopTimer(false);
+      state.currentGroupIndex = index;
+      state.group = index + 1;
+      state.phase = "report";
+      state.planned = durationForPhase("report");
+      state.elapsed = 0;
+      state.warned = false;
+      state.doneRang = false;
+      state.currentRecordId = null;
+      state.startedAt = null;
+      saveSchedule();
+      renderSchedule();
+      render();
+    }
+
+    function moveGroup(index, direction) {
+      const target = index + direction;
+      if (target < 0 || target >= state.schedule.length) return;
+      const [item] = state.schedule.splice(index, 1);
+      state.schedule.splice(target, 0, item);
+      if (state.currentGroupIndex === index) {
+        state.currentGroupIndex = target;
+      } else if (state.currentGroupIndex === target) {
+        state.currentGroupIndex = index;
+      }
+      state.group = state.currentGroupIndex + 1;
+      saveSchedule();
+      renderSchedule();
+      render();
+    }
+
+    function removeGroup(index) {
+      state.schedule.splice(index, 1);
+      if (state.schedule.length === 0) {
+        state.currentGroupIndex = 0;
+        state.group = 1;
+      } else {
+        state.currentGroupIndex = Math.min(state.currentGroupIndex, state.schedule.length - 1);
+        state.group = state.currentGroupIndex + 1;
+      }
+      saveSchedule();
+      renderSchedule();
+      render();
+    }
+
+    function renderSchedule() {
+      if (state.schedule.length === 0) {
+        els.scheduleList.innerHTML = '<p class="hint">尚未設定組別順序。可以逐一新增，或按「建立 8 組」。</p>';
+        return;
+      }
+
+      els.scheduleList.innerHTML = state.schedule.map((group, index) => `
+        <div class="schedule-item ${index === state.currentGroupIndex ? "active" : ""}">
+          <span class="schedule-number">${index + 1}</span>
+          <span class="schedule-name" title="${escapeHtml(group.name)}">${escapeHtml(group.name)}</span>
+          <button class="icon-button" type="button" data-action="up" data-index="${index}" title="往上">↑</button>
+          <button class="icon-button" type="button" data-action="down" data-index="${index}" title="往下">↓</button>
+          <button class="icon-button danger" type="button" data-action="remove" data-index="${index}" title="刪除">×</button>
+          <button class="button small set-current" type="button" data-action="current" data-index="${index}">設為目前</button>
+        </div>
+      `).join("");
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function saveSchedule() {
+      localStorage.setItem("presentationTimerSchedule", JSON.stringify({
+        currentGroupIndex: state.currentGroupIndex,
+        schedule: state.schedule
+      }));
+    }
+
+    function loadSchedule() {
+      try {
+        const saved = JSON.parse(localStorage.getItem("presentationTimerSchedule") || "{}");
+        state.schedule = Array.isArray(saved.schedule) ? saved.schedule : [];
+        state.currentGroupIndex = clampNumber(saved.currentGroupIndex, 0, Math.max(0, state.schedule.length));
+        state.group = state.currentGroupIndex + 1;
+      } catch {
+        state.schedule = [];
+        state.currentGroupIndex = 0;
+        state.group = 1;
+      }
+    }
+
     function saveRecords() {
       localStorage.setItem("presentationTimerRecords", JSON.stringify(state.records));
     }
@@ -825,7 +1103,7 @@
     function downloadCsv() {
       const header = ["組別", "階段", "原定秒數", "實際秒數", "超時秒數", "原定", "實際", "超時"];
       const rows = state.records.map((record) => [
-        `第 ${record.group} 組`,
+        record.groupName || `第 ${record.group} 組`,
         phaseNames[record.phase],
         record.planned,
         record.elapsed,
@@ -871,6 +1149,31 @@
       saveRecords();
       renderHistory();
     });
+    els.tabButtons.forEach((button) => {
+      button.addEventListener("click", () => switchTab(button.dataset.tab));
+    });
+    els.addGroupBtn.addEventListener("click", () => addGroup(els.groupNameInput.value));
+    els.groupNameInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") addGroup(els.groupNameInput.value);
+    });
+    els.addDefaultGroupsBtn.addEventListener("click", createDefaultGroups);
+    els.clearScheduleBtn.addEventListener("click", () => {
+      state.schedule = [];
+      state.currentGroupIndex = 0;
+      state.group = 1;
+      saveSchedule();
+      renderSchedule();
+      render();
+    });
+    els.scheduleList.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+      const index = Number(button.dataset.index);
+      if (button.dataset.action === "up") moveGroup(index, -1);
+      if (button.dataset.action === "down") moveGroup(index, 1);
+      if (button.dataset.action === "remove") removeGroup(index);
+      if (button.dataset.action === "current") setCurrentGroup(index);
+    });
 
     [
       els.reportMinutes,
@@ -887,8 +1190,10 @@
       });
     });
 
+    loadSchedule();
     loadRecords();
     resetCurrentPhase();
+    renderSchedule();
     renderHistory();
   </script>
 </body>
