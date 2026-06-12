@@ -571,6 +571,7 @@
               <option value="bell">教室大鈴</option>
               <option value="dog">狗叫</option>
               <option value="ding">叮一聲</option>
+              <option value="bilingual">8 秒中英時間到</option>
             </select>
           </label>
           <label>
@@ -958,6 +959,15 @@
         return;
       }
 
+      if (theme === "bilingual") {
+        if (kind === "done") {
+          playBilingualTimeUp(ctx, now, volume);
+        } else {
+          playDing(ctx, now, volume);
+        }
+        return;
+      }
+
       playPattern(ctx, kind === "done" ? [659.25, 880, 987.77, 1318.51] : [880, 1174.66], now, 0.32, 0.28, volume, "sine");
     }
 
@@ -990,6 +1000,33 @@
       playTone(ctx, 1046.5, start, 0.62, volume * 0.86, "sine");
       playTone(ctx, 2093, start + 0.012, 0.5, volume * 0.22, "sine");
       playTone(ctx, 1567.98, start + 0.02, 0.38, volume * 0.18, "triangle");
+    }
+
+    function playBilingualTimeUp(ctx, start, volume) {
+      for (let index = 0; index < 4; index += 1) {
+        const noteStart = start + index * 2;
+        playDing(ctx, noteStart, volume);
+      }
+
+      if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) return;
+      window.speechSynthesis.cancel();
+      const phrases = [
+        { text: "時間到了", lang: "zh-TW" },
+        { text: "Time's up", lang: "en-US" },
+        { text: "時間到了", lang: "zh-TW" },
+        { text: "Time's up", lang: "en-US" }
+      ];
+
+      phrases.forEach((phrase, index) => {
+        window.setTimeout(() => {
+          const utterance = new SpeechSynthesisUtterance(phrase.text);
+          utterance.lang = phrase.lang;
+          utterance.rate = 0.88;
+          utterance.pitch = phrase.lang === "zh-TW" ? 1.08 : 0.96;
+          utterance.volume = Math.max(0, Math.min(1, volume));
+          window.speechSynthesis.speak(utterance);
+        }, index * 2000);
+      });
     }
 
     function playNoiseBurst(ctx, start, duration, volume, centerFrequency) {
