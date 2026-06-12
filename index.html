@@ -549,9 +549,9 @@
                 剩餘秒數
                 <input id="warningSeconds" type="number" min="0" max="59" step="1" value="30">
               </label>
-            </div>
-            <label class="toggle-row">
-              <span>報告時間到自動進入 QA</span>
+          </div>
+          <label class="toggle-row">
+              <span>報告結束後自動進入 QA</span>
               <input id="autoAdvance" type="checkbox" checked>
             </label>
           </section>
@@ -752,13 +752,7 @@
 
     function setPhase(phase, keepRunning = false) {
       finalizeCurrentRecord();
-      state.phase = phase;
-      state.planned = durationForPhase(phase);
-      state.elapsed = 0;
-      state.warned = false;
-      state.doneRang = false;
-      state.currentRecordId = null;
-      state.startedAt = null;
+      preparePhase(phase);
       if (!keepRunning) stopTimer(false);
       if (keepRunning) beginRecordSession();
       render();
@@ -774,12 +768,16 @@
     }
 
     function stopTimer(shouldRecord = true) {
+      const shouldStartQa = shouldRecord && state.phase === "report" && els.autoAdvance.checked && state.elapsed > 0;
       state.running = false;
       if (state.timerId) {
         window.clearInterval(state.timerId);
         state.timerId = null;
       }
       if (shouldRecord) finalizeCurrentRecord();
+      if (shouldStartQa) {
+        preparePhase("qa");
+      }
       render();
     }
 
@@ -796,13 +794,19 @@
       if (!state.doneRang && remaining === 0) {
         state.doneRang = true;
         ring("done");
-        if (state.phase === "report" && els.autoAdvance.checked) {
-          setPhase("qa", true);
-          return;
-        }
       }
 
       render();
+    }
+
+    function preparePhase(phase) {
+      state.phase = phase;
+      state.planned = durationForPhase(phase);
+      state.elapsed = 0;
+      state.warned = false;
+      state.doneRang = false;
+      state.currentRecordId = null;
+      state.startedAt = null;
     }
 
     function nextGroup() {
