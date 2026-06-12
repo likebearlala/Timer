@@ -571,6 +571,7 @@
               <option value="bell">教室大鈴</option>
               <option value="dog">狗叫</option>
               <option value="ding">叮一聲</option>
+              <option value="bilingual5">5 秒中英時間到</option>
               <option value="bilingual">8 秒中英時間到</option>
             </select>
           </label>
@@ -959,9 +960,9 @@
         return;
       }
 
-      if (theme === "bilingual") {
+      if (theme === "bilingual5" || theme === "bilingual") {
         if (kind === "done") {
-          playBilingualTimeUp(ctx, now, volume);
+          playBilingualTimeUp(ctx, now, volume, theme === "bilingual5" ? 5 : 8);
         } else {
           playDing(ctx, now, volume);
         }
@@ -1002,9 +1003,10 @@
       playTone(ctx, 1567.98, start + 0.02, 0.38, volume * 0.18, "triangle");
     }
 
-    function playBilingualTimeUp(ctx, start, volume) {
+    function playBilingualTimeUp(ctx, start, volume, durationSeconds) {
+      const interval = durationSeconds / 4;
       for (let index = 0; index < 4; index += 1) {
-        const noteStart = start + index * 2;
+        const noteStart = start + index * interval;
         playDing(ctx, noteStart, volume);
       }
 
@@ -1025,7 +1027,7 @@
           utterance.pitch = phrase.lang === "zh-TW" ? 1.08 : 0.96;
           utterance.volume = Math.max(0, Math.min(1, volume));
           window.speechSynthesis.speak(utterance);
-        }, index * 2000);
+        }, index * interval * 1000);
       });
     }
 
